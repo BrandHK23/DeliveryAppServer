@@ -23,6 +23,8 @@ module.exports = {
       const user = req.body;
       const data = await User.create(user);
 
+      await Rol.create(data.id, 1); // Rol por defecto
+
       return res.status(201).json({
         success: true,
         message: "Usuario registrado con éxito",
@@ -65,8 +67,10 @@ module.exports = {
           phone: myUser.phone,
           image: myUser.image,
           session_token: `JWT ${token}`,
+          roles: myUser.roles,
         };
 
+        console.log(`Usuario: ${data}`);
         return res.status(201).json({
           success: true,
           message: "Inicio de sesión exitoso",

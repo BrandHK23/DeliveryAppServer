@@ -30,7 +30,7 @@ app.set("port", port);
 users(app);
 // 192.168.0.18 Zitacuaro
 // 192.168.1.165 Morelia
-server.listen(3000, "192.168.0.23" || "localhost", () => {
+server.listen(3000, "192.168.0.13" || "localhost", () => {
   console.log(`Server running on port ${port} ` + process.pid);
 });
 
