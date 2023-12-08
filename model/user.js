@@ -9,7 +9,7 @@ User.getAll = () => {
   return db.manyOrNone(sql);
 };
 
-User.create = (user) => {
+User.create = async (user) => {
   const myPasswordHashed = crypto
     .createHash("md5")
     .update(user.password)
@@ -17,17 +17,68 @@ User.create = (user) => {
   user.password = myPasswordHashed;
 
   const sql = `INSERT INTO users(
-    email,
-    name,
-    lastname,
-    phone,
-    image,
-    password,
-    created_at,
-    updated_at
-  )
-  VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`;
+      email,
+      name,
+      lastname,
+      phone,
+      image,
+      password,
+      created_at,
+      updated_at
+    )
+    VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`;
+
+  try {
+    const result = await db.query(sql, [
+      user.email,
+      user.name,
+      user.lastname,
+      user.phone,
+      user.image,
+      user.password,
+      new Date(),
+      new Date(),
+    ]);
+
+    console.log("Resultado de la inserción:", result); // Verificar la estructura exacta del resultado
+
+    // Asumiendo que 'result' es el resultado directo de la consulta
+    if (result && result[0]) {
+      return result[0].id;
+    } else {
+      throw new Error("Usuario no fue creado");
+    }
+  } catch (error) {
+    console.error("Error en la consulta: ", error);
+    throw error;
+  }
 };
+
+User.findById = async (id, callback) => {
+  const sql = `
+    SELECT
+      id,
+      email,
+      name,
+      lastname,
+      image,
+      phone,
+      password,
+      session_token
+    FROM
+      users
+    WHERE
+      id = $1`;
+
+  try {
+    const user = await db.oneOrNone(sql, id);
+    callback(null, user);
+  } catch (error) {
+    callback(error, null);
+  }
+};
+
+module.exports = User;
 
 User.findById = (id, callback) => {
   const sql = `
@@ -85,6 +136,80 @@ User.findByEmail = (email) => {
 		U.id`;
 
   return db.oneOrNone(sql, email);
+};
+
+User.findUserId = (id) => {
+  const sql = `
+    SELECT
+      U.id,
+      U.email,
+      U.name,
+      U.lastname,
+      U.image,
+      U.phone,
+      U.password,
+      U.session_token,
+	  json_agg(
+	  	json_build_object(
+			'id', R.id,
+			'name', R.name,
+			'image', R.image,
+			'route', R.route
+		)
+	  ) AS roles
+    FROM
+      users AS U
+	  
+	INNER JOIN
+		users_has_roles AS UHR
+	ON
+		UHR.id_user = U.id
+	INNER JOIN
+		roles AS R
+	ON R.id = UHR.id_rol
+    WHERE
+      U.id = $1
+	GROUP BY
+		U.id`;
+
+  return db.oneOrNone(sql, id);
+};
+
+User.update = (user) => {
+  const sql = `
+    UPDATE
+      users
+    SET
+      name = $2,
+      lastname = $3,
+      phone = $4,
+      image = $5,
+      updated_at = $6
+    WHERE
+      id = $1
+      `;
+
+  return db.none(sql, [
+    user.id,
+    user.name,
+    user.lastname,
+    user.phone,
+    user.image,
+    new Date(),
+  ]);
+};
+
+User.updateToken = (id, token) => {
+  const sql = `
+    UPDATE
+      users
+    SET
+      session_token = $2
+    WHERE
+      id = $1
+      `;
+
+  return db.none(sql, [id, token]);
 };
 
 User.isPasswordMatched = (userPassword, hash) => {
