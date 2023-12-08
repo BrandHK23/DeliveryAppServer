@@ -41,7 +41,7 @@ INSERT INTO roles (
 	updated_at
 )VALUES(
 	'CLIENTE',
-	'client/product/list',
+	'client/products/list',
 	'2023-10-17',
 	'2023-10-17'
 );
