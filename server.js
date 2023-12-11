@@ -27,6 +27,7 @@ const upload = multer({
 const users = require("./routes/usersRoutes");
 const categories = require("./routes/categoriesRoutes");
 const products = require("./routes/productsRoutes");
+const address = require("./routes/addressRoutes");
 const port = process.env.PORT || 3000;
 
 // Middlewares
@@ -46,6 +47,7 @@ app.set("port", port);
 users(app, upload);
 categories(app);
 products(app, upload);
+address(app);
 
 // Rutas principales
 app.get("/", (req, res) => {

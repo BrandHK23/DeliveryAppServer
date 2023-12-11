@@ -2,6 +2,21 @@ const db = require("../config/config");
 
 const Categorie = {};
 
+Categorie.getAll = () => {
+  const sql = `
+  SELECT
+    id,
+    name,
+    description
+  FROM
+    categories
+  ORDER BY
+    name
+  `;
+
+  return db.manyOrNone(sql);
+};
+
 Categorie.create = (category) => {
   const sql = `
   INSERT INTO 
