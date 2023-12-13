@@ -3,6 +3,8 @@ const passport = require("passport");
 
 module.exports = (app, upload) => {
   app.get("/api/users/getAll", UsersControllers.getAll);
+  app.get("/api/users/findDeliveryMen", UsersControllers.findDeliveryMen);
+
   app.get(
     "/api/users/findById/:id",
     passport.authenticate("jwt", { session: false }),

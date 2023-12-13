@@ -19,6 +19,20 @@ module.exports = {
     }
   },
 
+  async findDeliveryMen(req, res, next) {
+    try {
+      const data = await User.findDeliveryMen();
+      console.log(`Repartidores: ${data}`);
+      return res.status(201).json(data);
+    } catch (error) {
+      console.log(`Error: ${error}`);
+      return res.status(501).json({
+        success: false,
+        message: "Error al obtener los repartidores",
+      });
+    }
+  },
+
   async findById(req, res, next) {
     try {
       const id = req.params.id;

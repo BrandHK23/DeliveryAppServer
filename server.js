@@ -28,6 +28,7 @@ const users = require("./routes/usersRoutes");
 const categories = require("./routes/categoriesRoutes");
 const products = require("./routes/productsRoutes");
 const address = require("./routes/addressRoutes");
+const orders = require("./routes/ordersRoutes");
 const port = process.env.PORT || 3000;
 
 // Middlewares
@@ -47,6 +48,7 @@ app.set("port", port);
 users(app, upload);
 categories(app);
 products(app, upload);
+orders(app);
 address(app);
 
 // Rutas principales
