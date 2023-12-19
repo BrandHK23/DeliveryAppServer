@@ -33,4 +33,10 @@ module.exports = (app) => {
     passport.authenticate("jwt", { session: false }),
     ordersController.updateToOnTheWay
   );
+
+  app.put(
+    "/api/order/updateToOnDelivered",
+    passport.authenticate("jwt", { session: false }),
+    ordersController.updateToOnDelivered
+  );
 };

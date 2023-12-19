@@ -108,4 +108,24 @@ module.exports = {
       });
     }
   },
+
+  async updateToOnDelivered(req, res, next) {
+    try {
+      let order = req.body;
+      order.status = "DELIVERED";
+      await Order.update(order);
+
+      return res.status(201).json({
+        success: true,
+        message: "La orden está entregada",
+      });
+    } catch (error) {
+      console.log(`error ${error}`);
+      return res.status(501).json({
+        success: false,
+        message: "Hubo un error al actualizar la orden",
+        errors: error,
+      });
+    }
+  },
 };
