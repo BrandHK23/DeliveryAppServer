@@ -13,6 +13,10 @@ const multer = require("multer");
 const admin = require("firebase-admin");
 const serviceAccount = require("./serviceAccountKey.json");
 const passport = require("passport");
+const io = require("socket.io")(server);
+
+/* Socket.io */
+const orderDeliverySocket = require("./sockets/orders_delivery_socket");
 
 // Inicialización de Firebase admin
 admin.initializeApp({
@@ -43,6 +47,9 @@ require("./config/passport")(passport);
 app.disable("x-powered-by");
 
 app.set("port", port);
+
+// Socket.io
+orderDeliverySocket(io);
 
 // Configuración de rutas
 users(app, upload);

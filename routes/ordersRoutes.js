@@ -5,6 +5,12 @@ module.exports = (app) => {
   // Get all address
 
   app.get(
+    "/api/order/findByClientAndStatus/:id_client/:status",
+    passport.authenticate("jwt", { session: false }),
+    ordersController.findByClientAndStatus
+  );
+
+  app.get(
     "/api/order/findByDeliveryAndStatus/:id_delivery/:status",
     passport.authenticate("jwt", { session: false }),
     ordersController.findByDeliveryAndStatus
@@ -38,5 +44,11 @@ module.exports = (app) => {
     "/api/order/updateToOnDelivered",
     passport.authenticate("jwt", { session: false }),
     ordersController.updateToOnDelivered
+  );
+
+  app.put(
+    "/api/order/updateLatLng",
+    passport.authenticate("jwt", { session: false }),
+    ordersController.updateLatLng
   );
 };

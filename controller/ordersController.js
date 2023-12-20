@@ -2,6 +2,26 @@ const Order = require("../model/order");
 const OrderHasProducts = require("../model/order_has_products");
 
 module.exports = {
+  async findByClientAndStatus(req, res, next) {
+    try {
+      const status = req.params.status;
+      const id_client = req.params.id_client;
+      const data = await Order.findByClientAndStatus(id_client, status);
+      return res.status(201).json({
+        message: "Ordenes obtenidas",
+        success: true,
+        data: data,
+      });
+    } catch (error) {
+      console.log(`Error: ${error}`);
+      return res.status(501).json({
+        message: "Error al obtener las ordenes del cliente",
+        success: false,
+        error: error,
+      });
+    }
+  },
+
   async findByDeliveryAndStatus(req, res, next) {
     try {
       const status = req.params.status;
@@ -114,6 +134,25 @@ module.exports = {
       let order = req.body;
       order.status = "DELIVERED";
       await Order.update(order);
+
+      return res.status(201).json({
+        success: true,
+        message: "La orden está entregada",
+      });
+    } catch (error) {
+      console.log(`error ${error}`);
+      return res.status(501).json({
+        success: false,
+        message: "Hubo un error al actualizar la orden",
+        errors: error,
+      });
+    }
+  },
+
+  async updateLatLng(req, res, next) {
+    try {
+      let order = req.body;
+      await Order.updateLatLng(order);
 
       return res.status(201).json({
         success: true,
