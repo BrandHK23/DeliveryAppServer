@@ -14,6 +14,13 @@ const admin = require("firebase-admin");
 const serviceAccount = require("./serviceAccountKey.json");
 const passport = require("passport");
 const io = require("socket.io")(server);
+const mercadopago = require("mercadopago");
+
+// Configuración de Mercado Pago
+mercadopago.configure({
+  access_token:
+    "TEST-8913120874816489-122022-85a7f701d3a7eb5d8482b064952a053d-517315294",
+});
 
 /* Socket.io */
 const orderDeliverySocket = require("./sockets/orders_delivery_socket");
@@ -33,6 +40,9 @@ const categories = require("./routes/categoriesRoutes");
 const products = require("./routes/productsRoutes");
 const address = require("./routes/addressRoutes");
 const orders = require("./routes/ordersRoutes");
+const mercadopagoRoutes = require("./routes/mercadoPagoRoutes");
+
+// Puerto
 const port = process.env.PORT || 3000;
 
 // Middlewares
@@ -57,6 +67,7 @@ categories(app);
 products(app, upload);
 orders(app);
 address(app);
+mercadopagoRoutes(app);
 
 // Rutas principales
 app.get("/", (req, res) => {
