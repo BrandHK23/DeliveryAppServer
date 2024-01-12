@@ -36,6 +36,7 @@ const upload = multer({
 
 // Rutas
 const users = require("./routes/usersRoutes");
+const business = require("./routes/businessRoutes");
 const categories = require("./routes/categoriesRoutes");
 const products = require("./routes/productsRoutes");
 const address = require("./routes/addressRoutes");
@@ -63,6 +64,7 @@ orderDeliverySocket(io);
 
 // Configuración de rutas
 users(app, upload);
+business(app, upload);
 categories(app);
 products(app, upload);
 orders(app);

@@ -5,6 +5,39 @@ const Rol = require("../model/rol");
 const storage = require("../utils/cloud_storage");
 
 module.exports = {
+  async userHasBusiness(req, res, next) {
+    try {
+      const id = req.params.id;
+
+      if (!id) {
+        return res.status(400).json({
+          success: false,
+          message: "ID de usuario no proporcionado",
+        });
+      }
+
+      const data = await User.userHasBusiness(id);
+      if (data) {
+        console.log(`Usuario: ${JSON.stringify(data)}`);
+        return res.status(200).json({
+          success: true,
+          userHasBusiness: data.user_has_business,
+        });
+      } else {
+        return res.status(404).json({
+          success: false,
+          message: "Usuario no encontrado",
+        });
+      }
+    } catch (error) {
+      console.log(`Error: ${error}`);
+      return res.status(501).json({
+        success: false,
+        message: "Error al obtener el estado del negocio del usuario",
+      });
+    }
+  },
+
   async getAll(req, res, next) {
     try {
       const data = await User.getAll();
@@ -162,6 +195,7 @@ module.exports = {
           email: myUser.email,
           phone: myUser.phone,
           image: myUser.image,
+          user_has_business: myUser.user_has_business,
           session_token: `JWT ${token}`,
           roles: myUser.roles,
         };

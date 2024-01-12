@@ -3,6 +3,19 @@ const crypto = require("crypto");
 
 const User = {};
 
+User.userHasBusiness = (id_user) => {
+  const sql = `
+    SELECT
+      user_has_business
+    FROM
+      users
+    WHERE
+      id = $1
+  `;
+
+  return db.oneOrNone(sql, [id_user]);
+};
+
 User.getAll = () => {
   const sql = `SELECT * FROM users`;
 
@@ -23,10 +36,11 @@ User.create = async (user) => {
       phone,
       image,
       password,
+      user_has_business,
       created_at,
       updated_at
     )
-    VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`;
+    VALUES($1, $2, $3, $4, $5, $6, false, $8, $9) RETURNING id`;
 
   try {
     const result = await db.query(sql, [
@@ -36,6 +50,7 @@ User.create = async (user) => {
       user.phone,
       user.image,
       user.password,
+      user.user_has_business,
       new Date(),
       new Date(),
     ]);
@@ -137,6 +152,7 @@ User.findByEmail = (email) => {
       U.image,
       U.phone,
       U.password,
+      U.user_has_business,
       U.session_token,
 	  json_agg(
 	  	json_build_object(
@@ -174,6 +190,7 @@ User.findUserId = (id) => {
       U.image,
       U.phone,
       U.password,
+      U.user_has_business
       U.session_token,
 	  json_agg(
 	  	json_build_object(
@@ -185,7 +202,6 @@ User.findUserId = (id) => {
 	  ) AS roles
     FROM
       users AS U
-	  
 	INNER JOIN
 		users_has_roles AS UHR
 	ON

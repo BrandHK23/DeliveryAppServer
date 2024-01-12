@@ -2,6 +2,11 @@ const UsersControllers = require("../controller/usersController");
 const passport = require("passport");
 
 module.exports = (app, upload) => {
+  app.get(
+    "/api/users/userHasBusiness/:id",
+    passport.authenticate("jwt", { session: false }),
+    UsersControllers.userHasBusiness
+  );
   app.get("/api/users/getAll", UsersControllers.getAll);
   app.get("/api/users/findDeliveryMen", UsersControllers.findDeliveryMen);
 

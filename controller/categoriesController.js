@@ -3,7 +3,10 @@ const Category = require("../model/category");
 module.exports = {
   async getAll(req, res, next) {
     try {
-      const data = await Category.getAll();
+      // Suponiendo que obtienes el ID del usuario de alguna manera (e.g., desde el token de sesión)
+      const userId = req.user.id; // Asegúrate de cambiar esto según cómo manejes la autenticación
+
+      const data = await Category.getByUserId(userId); // Cambiado a getByUserId
       console.log(`Categories: ${JSON.stringify(data)}`);
       return res.status(201).json({
         message: "Categorías obtenidas",
@@ -23,14 +26,16 @@ module.exports = {
   async create(req, res, next) {
     try {
       const category = req.body;
-      console.log(`Category: ${category}`);
+      const userId = req.user.id; // Asume que el ID del usuario se obtiene de la sesión o el token
 
-      const data = await Category.create(category);
+      console.log(`Category: ${JSON.stringify(category)}`);
+
+      const data = await Category.create(category, userId); // Ahora pasa también el userId
 
       return res.status(201).json({
         message: "Categoría creada",
         success: true,
-        data: data.id,
+        data: data.id, // Asegúrate de que data.id exista y sea correcto
       });
     } catch (error) {
       console.log(`Error: ${error}`);
