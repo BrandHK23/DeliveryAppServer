@@ -3,15 +3,13 @@ const db = require("../config/config");
 const Business = {};
 
 Business.getBusinessByUserId = (id_user) => {
-  // Asegúrate de pasar el id_user como argumento
   const sql = `
-    SELECT b.*
-    FROM business b
-    JOIN users u ON b.id_user = u.id
-    WHERE u.id = $1;
+    SELECT *
+    FROM business
+    WHERE id_user = $1;
   `;
-  return db.manyOrNone(sql, [id_user]);
-  // Utiliza el id_user como parámetro en la consulta SQL
+
+  return db.oneOrNone(sql, [id_user]);
 };
 
 Business.getAll = () => {

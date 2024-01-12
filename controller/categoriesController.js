@@ -3,8 +3,7 @@ const Category = require("../model/category");
 module.exports = {
   async getAll(req, res, next) {
     try {
-      // Suponiendo que obtienes el ID del usuario de alguna manera (e.g., desde el token de sesión)
-      const userId = req.user.id; // Asegúrate de cambiar esto según cómo manejes la autenticación
+      const userId = req.user.id;
 
       const data = await Category.getByUserId(userId); // Cambiado a getByUserId
       console.log(`Categories: ${JSON.stringify(data)}`);

@@ -71,16 +71,30 @@ module.exports = {
       const userId = req.params.userId;
       const data = await Business.getBusinessByUserId(userId);
 
-      return res.status(201).json({
-        success: true,
-        message: "Negocio encontrado",
-        data: data,
-      });
+      console.log(
+        `Datos del negocio para el usuario ${userId}: ${JSON.stringify(data)}`
+      );
+
+      if (data) {
+        return res.status(200).json({
+          success: true,
+          message: "Negocio encontrado",
+          data: data,
+        });
+      } else {
+        return res.status(404).json({
+          success: false,
+          message: "Negocio no encontrado para el usuario dado",
+        });
+      }
     } catch (error) {
-      console.log(`Error: ${error}`);
-      return res.status(501).json({
+      console.log(
+        `Error al obtener el negocio para el usuario ${userId}: ${error}`
+      );
+      return res.status(500).json({
         success: false,
-        message: "Error al obtener el negocio",
+        message: "Error interno del servidor",
+        error: error,
       });
     }
   },

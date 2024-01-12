@@ -2,6 +2,10 @@ const BusinessController = require("../controller/businessController");
 
 module.exports = (app, upload) => {
   app.get("/api/business/getAll", BusinessController.getAll);
+  app.get(
+    "/api/business/getBusinessByUserId/:userId",
+    BusinessController.getBusinessByUserId
+  );
   app.post(
     "/api/business/create",
     upload.array("image", 1),
