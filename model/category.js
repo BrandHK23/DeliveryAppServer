@@ -21,39 +21,30 @@ Categorie.getByUserId = (userId) => {
 };
 
 Categorie.create = (category, userId) => {
-  // Primero, obtén el id_business basado en el id_user
   const sqlGetBusinessId = `
     SELECT id_business
     FROM business
     WHERE id_user = $1
   `;
 
-  db.oneOrNone(sqlGetBusinessId, [userId])
-    .then((business) => {
-      // Ahora, inserta la nueva categoría con el id_business obtenido
-      const sqlCreateCategory = `
-      INSERT INTO 
-        categories(
-          name,
-          description,
-          id_business, 
-          created_at,
-          updated_at
-        )
-      VALUES($1, $2, $3, $4, $5) RETURNING id
-    `;
-      return db.oneOrNone(sqlCreateCategory, [
-        category.name,
-        category.description,
-        business.id_business,
-        new Date(),
-        new Date(),
-      ]);
-    })
-    .catch((error) => {
-      console.log("Error: ", error);
-      // Manejar el error adecuadamente
-    });
+  // Retorna la promesa al nivel superior
+  return db.oneOrNone(sqlGetBusinessId, [userId]).then((business) => {
+    if (!business || !business.id_business) {
+      throw new Error("Negocio no encontrado para este usuario");
+    }
+    const sqlCreateCategory = `
+        INSERT INTO 
+          categories(name, description, id_business, created_at, updated_at)
+        VALUES($1, $2, $3, $4, $5) RETURNING id
+      `;
+    return db.one(sqlCreateCategory, [
+      category.name,
+      category.description,
+      business.id_business,
+      new Date(),
+      new Date(),
+    ]);
+  });
 };
 
 module.exports = Categorie;

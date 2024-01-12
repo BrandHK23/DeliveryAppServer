@@ -172,3 +172,8 @@ CREATE TABLE orders_has_products(
 
 ALTER TABLE users
 ADD COLUMN user_has_business BOOLEAN DEFAULT false;
+
+ALTER TABLE categories DROP CONSTRAINT categories_name_key;
+
+ALTER TABLE products ALTER COLUMN image1 DROP NOT NULL;
+
